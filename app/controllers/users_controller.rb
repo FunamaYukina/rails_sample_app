@@ -2,10 +2,10 @@ class UsersController < ApplicationController
 
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user, only: [:edit, :update]
-  before_action :admin_user,     only: :destroy
+  before_action :admin_user, only: :destroy
 
   def index
-    @users =  User.paginate(page: params[:page])
+    @users = User.paginate(page: params[:page])
   end
 
 
@@ -21,9 +21,13 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     # binding.pry
     if @user.save
-      log_in @user
-      flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user
+      # log_in @user
+      # flash[:success] = "Welcome to the Sample App!"
+      # redirect_to @user
+      @user.send_activation_email
+      # UserMailer.account_activation(@user).deliver_now
+      flash[:info] = "Please check your email to activate your account."
+      redirect_to root_url
     else
       render 'new'
     end
